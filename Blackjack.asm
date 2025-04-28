@@ -1,3 +1,4 @@
+#Bryan Dinh, Caitlyn Hue, Joseline Ly, Sam Klapper, Ryan Vu
 #CS2640
 #BlackJack
 
@@ -8,6 +9,7 @@ dashboard: .asciiz "===========================================================\
 options: .asciiz "=\t   (1) Play Game\t   (2) Exit\t\t  =\n"
 dashboardNewLine: .asciiz "=\t\t\t\t\t\t\t  =\n"
 endDashboard: .asciiz "===========================================================\n"
+option: .asciiz "\nChoose your option: "
 
 
 # deck of cards. Each index will represent a card with it's value.
@@ -25,6 +27,7 @@ menu:
 	printString(options)
 	printString(dashboardNewLine)
 	printString(endDashboard)
+	printString(option)
 	
 	# Save user int
 	getInt
