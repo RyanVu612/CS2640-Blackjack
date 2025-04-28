@@ -1,5 +1,6 @@
-#CS2640
-#BlackJack
+# CS2640 - 12 PM
+# Blackjack
+# Ryan Vu, Joseline Ly, Caitlyn Hue, Sam Klapper, Bryan Dinh
 
 .include "Macros.asm"
 
@@ -19,7 +20,7 @@ player: .space 44
 .text
 main:
 menu:
-	#Print out the dashboard
+	# Print out the dashboard
 	printString(dashboard)
 	printString(dashboardNewLine)
 	printString(options)
