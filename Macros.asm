@@ -6,23 +6,44 @@
 	syscall
 .end_macro
 
+.macro printInt(%integer)
+	li $v0, 1
+	move $a0, %integer
+	syscall
+.end_macro
+
 .macro getInt 	# save int in $v0
 	li $v0, 5
 	syscall
 .end_macro
 
 .macro randomCard(%deck, %deckSize)	#save random card in $v0
-	li $t1, 1		#set $t1 to a nonzero number in case it is already set to 0
+	move $t3, %deckSize
+	#get current time
+	li $v0, 30
+	syscall
+	move $t1, $a0
+	
+	li $t2, 1		#set $t1 to a nonzero number in case it is already set to 0
 	#la $a0, %deck
 	#li $t2, %deckSize
 loop_randomCard:					#keep getting random card until card is pulled
+	#get random number
+	li $v0, 42
+	move $a1, $t3
+	syscall
+	move $t2, $v0
+	
+	add $t2, $t1, $t2			#combine time with random
+	rem $t2, $t2, $t3		#mod 52 to get random number 0-51
+	
 	bnez $v0, done_randomCard
 	li $v0, 42
-	li $a1, %deckSize
+	move $a1, $t3
 	syscall				#random number in $v0
-	move $t1, $v0		#save random number in $t1
+	move $t2, $v0		#save random number in $t2
 	
-	getEntry(%deck, $t1)		#get card value of that index
+	getEntry(%deck, $t2)		#get card value of that index
 	j loop_randomCard
 	
 done_randomCard:

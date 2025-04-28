@@ -44,37 +44,41 @@ play:
 	li $s3, 0	#number of cards dealer has
 	li $s4, 0	#number of cards player has
 	
+	li $s5, 52 	#deckSize
 	
 	#randomly select 2 cards for the dealer		save into $s1
 	#remove those 2 cards from deck as you take them
 	
 	#first card
-	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
+	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
 	addEntry($s1, $s3, $v0)		#put card into dealer hand
 	add $s3, $s3, 1				#increment number of cards dealer has
-	removeEntry($s0, $t1)		#remove card from deck
+	removeEntry($s0, $t2)		#remove card from deck
 	
 	#second card
-	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
+	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
 	addEntry($s1, $s3, $v0)		#put card into dealer hand
 	add $s3, $s3, 1				#increment number of cards dealer has
-	removeEntry($s0, $t1)		#remove card from deck
+	removeEntry($s0, $t2)		#remove card from deck
 	
 	
 	#randomly select 2 cards for the player		save into $s2
 	#remove those 2 cards from deck as you take them
 	
 	#first card
-	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
+	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
 	addEntry($s2, $s4, $v0)		#put card into player hand
 	add $s4, $s4, 1				#increment number of cards player has
-	removeEntry($s0, $t1)		#remove card from deck
+	removeEntry($s0, $t2)		#remove card from deck
 	
 	#second card
-	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
+	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
 	addEntry($s2, $s4, $v0)		#put card into player hand
 	add $s4, $s4, 1				#increment number of cards dealer has
-	removeEntry($s0, $t1)		#remove card from deck
+	removeEntry($s0, $t2)		#remove card from deck
+	
+	lw $t5, 0($s1)
+	printInt($t5)
 	
 	
 	#display the cards of the dealer and the player. Dealer should be on top of player in UI/UX
