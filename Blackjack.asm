@@ -12,8 +12,8 @@ endDashboard: .asciiz "=========================================================
 
 # deck of cards. Each index will represent a card with it's value.
 deck: .word 1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10
-dealer: .space 45
-player: .space 45
+dealer: .space 44
+player: .space 44
 
 
 .text
@@ -37,16 +37,45 @@ play:
 	#-----------Load-Game-----------#
 	#load deck
 	la $s0, deck 		# $s0 = deck
-	li $t1, 52			#count of cards
 	
 	la $s1, dealer		#dealer hand
 	la $s2, player		#player hand
 	
+	li $s3, 0	#number of cards dealer has
+	li $s4, 0	#number of cards player has
+	
+	
 	#randomly select 2 cards for the dealer		save into $s1
 	#remove those 2 cards from deck as you take them
 	
+	#first card
+	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
+	addEntry($s1, $s3, $v0)		#put card into dealer hand
+	add $s3, $s3, 1				#increment number of cards dealer has
+	removeEntry($s0, $t1)		#remove card from deck
+	
+	#second card
+	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
+	addEntry($s1, $s3, $v0)		#put card into dealer hand
+	add $s3, $s3, 1				#increment number of cards dealer has
+	removeEntry($s0, $t1)		#remove card from deck
+	
+	
 	#randomly select 2 cards for the player		save into $s2
 	#remove those 2 cards from deck as you take them
+	
+	#first card
+	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
+	addEntry($s2, $s4, $v0)		#put card into player hand
+	add $s4, $s4, 1				#increment number of cards player has
+	removeEntry($s0, $t1)		#remove card from deck
+	
+	#second card
+	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
+	addEntry($s2, $s4, $v0)		#put card into player hand
+	add $s4, $s4, 1				#increment number of cards dealer has
+	removeEntry($s0, $t1)		#remove card from deck
+	
 	
 	#display the cards of the dealer and the player. Dealer should be on top of player in UI/UX
 	#only display the first of the dealers cards

@@ -11,20 +11,21 @@
 	syscall
 .end_macro
 
-.macro randomCard(%array, %size)	#save random card in $t3
-	li $v0, 1		#set $t3 to a nonzero number in case it is already set to 0
-	la $a0, %array
-	li $t2, %size
-loop_randomNumber:					#keep getting random card until card is pulled
-	bnez $v0, done_randomNumber
+.macro randomCard(%deck, %deckSize)	#save random card in $v0
+	li $t1, 1		#set $t1 to a nonzero number in case it is already set to 0
+	#la $a0, %deck
+	#li $t2, %deckSize
+loop_randomCard:					#keep getting random card until card is pulled
+	bnez $v0, done_randomCard
 	li $v0, 42
-	li $a1, %size
+	li $a1, %deckSize
 	syscall				#random number in $v0
+	move $t1, $v0		#save random number in $t1
 	
-	getEntry($a0, $v0)		#get card value of that index
-	j loop_randomNumber
+	getEntry(%deck, $t1)		#get card value of that index
+	j loop_randomCard
 	
-done_randomNumber:
+done_randomCard:
 .end_macro
 
 .macro sumArray(%array, %size)	#sum saved to $v0
@@ -44,23 +45,20 @@ end_sumArray:	#do nothing, exit out of macro
 .end_macro
 
 .macro getEntry(%array, %index)		#save in $v0
-	la $a0, %array
-	li $t2, %index
-	mul $t2, $t2, 4
-	lw $v0, $t2($a0)
+	mul $t2, %index, 4
+	add $t3, %array, $t2
+	lw $v0, 0($t3)
 .end_macro
 
-.macro setEntry(%array, %index, %value)
-	la $a0, %array
-	li $t2, %index
-	mul $t2, $t2, 4
-	sw %value, $t2($a0)
+.macro addEntry(%array, %index, %value)
+	mul $t2, %index, 4
+	add $t3, %array, $t2
+	sw %value, 0($t3)
 .end_macro
 
 .macro removeEntry(%array, %index)		#set selected index to 0
-	la $a0, %array
-	li $t2, %index
-	mul $t2, $t2, 4
-	sw $zero, $t2($a0)
+	mul $t2, %index, 4
+	add $t3, %array, $t2
+	sw $zero, 0($t3)
 .end_macro
 
