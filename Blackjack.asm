@@ -29,31 +29,31 @@ menu:
 	
 	# Save user int
 	getInt
-	move $t0, $v0
+	move $t0, $v0		# Store user input in $t0
 	beq $t0, 1, play
 	beq $t0, 2, exit
 	j menu		# loop until get valid input
 	
 play:
 	#-----------Load-Game-----------#
-	#load deck
+	# Load deck
 	la $s0, deck 		# $s0 = deck
 	
-	la $s1, dealer		#dealer hand
-	la $s2, player		#player hand
+	la $s1, dealer		# Dealer hand
+	la $s2, player		# Player hand
 	
-	li $s3, 0	#number of cards dealer has
-	li $s4, 0	#number of cards player has
+	li $s3, 0	# Number of cards dealer has
+	li $s4, 0	# Number of cards player has
 	
 	
-	#randomly select 2 cards for the dealer		save into $s1
-	#remove those 2 cards from deck as you take them
+	# Randomly select 2 cards for the dealer		save into $s1
+	# Remove those 2 cards from deck as you take them
 	
-	#first card
-	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
-	addEntry($s1, $s3, $v0)		#put card into dealer hand
-	add $s3, $s3, 1				#increment number of cards dealer has
-	removeEntry($s0, $t1)		#remove card from deck
+	# First card
+	randomCard($s0, 52)			# Get random card in $v0			#save index of card in $t1
+	addEntry($s1, $s3, $v0)		# Put card into dealer hand
+	add $s3, $s3, 1				# Increment number of cards dealer has
+	removeEntry($s0, $t1)		# Remove card from deck
 	
 	#second card
 	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
