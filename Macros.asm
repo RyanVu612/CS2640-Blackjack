@@ -11,5 +11,11 @@
 	syscall
 .end_macro
 
+.macro randomNumber(%max)	#save random int in $v0
+	li $v0, 42
+	li $a1, %max
+	syscall
+.end_macro
+
 
 
