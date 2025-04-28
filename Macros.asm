@@ -50,7 +50,14 @@ end_sumArray:	#do nothing, exit out of macro
 	lw $v0, $t2($a0)
 .end_macro
 
-.macro removeEntry(%array, %index)		
+.macro setEntry(%array, %index, %value)
+	la $a0, %array
+	li $t2, %index
+	mul $t2, $t2, 4
+	sw %value, $t2($a0)
+.end_macro
+
+.macro removeEntry(%array, %index)		#set selected index to 0
 	la $a0, %array
 	li $t2, %index
 	mul $t2, $t2, 4
