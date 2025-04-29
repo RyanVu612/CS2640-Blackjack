@@ -6,25 +6,49 @@
 	syscall
 .end_macro
 
-.macro getInt 	# Save int in $v0
+.macro printInt(%integer)
+	li $v0, 1
+	move $a0, %integer
+	syscall
+.end_macro
+
+.macro getInt 	# save int in $v0
 	li $v0, 5
 	syscall
 .end_macro
 
-.macro randomCard(%deck, %deckSize)	# Save random card in $v0
-	li $t1, 1		# Set $t1 to a nonzero number in case it is already set to 0
-	#la $a0, %deck
-	#li $t2, %deckSize
-	loop_randomCard:					# Keep getting random card until card is pulled
-		bnez $v0, done_randomCard
-		li $v0, 42
-		li $a1, %deckSize
-		syscall				# Random number in $v0
-		move $t1, $v0		# Save random number in $t1
+.macro randomCard(%deck, %deckSize)	#save random card in $v0
+	li $v0, 0		#set $v0 to zero to ensure code runs at least once
+loop_randomCard:			#keep getting random card until card is pulled
+	bnez $v0, done_randomCard
+	#get current time
+	li $v0, 30
+	syscall
+	move $t1, $a0		#save time in $t1
+	
+	bltz $t1, negate
+	j done_negate
+
+negate:
+	sub $t1, $zero, $t1
+	j done_negate
+	
+done_negate:
+	li $v0, 42
+	move $a1, %deckSize
+	syscall					#random number 0-51 in $v0
+	move $t2, $v0			#move random number to $t2
 		
-		getEntry(%deck, $t1)		# Get card value of that index
-		j loop_randomCard
-	done_randomCard:
+	add $t2, $t1, $t2			#combine time with random
+	
+	#get $t2 % $t3
+	div $t2, %deckSize		#divide $t2 by 52
+	mfhi $t2				#move remainder into $t2
+	getEntry(%deck, $t2)		#get card value of that index
+	
+	j loop_randomCard
+	
+done_randomCard:
 .end_macro
 
 .macro sumArray(%array, %size)	#sum saved to $v0
