@@ -18,32 +18,34 @@
 .end_macro
 
 .macro randomCard(%deck, %deckSize)	#save random card in $v0
-	move $t3, %deckSize
+	li $v0, 0		#set $v0 to zero to ensure code runs at least once
+loop_randomCard:			#keep getting random card until card is pulled
+	bnez $v0, done_randomCard
 	#get current time
 	li $v0, 30
 	syscall
-	move $t1, $a0
+	move $t1, $a0		#save time in $t1
 	
-	li $t2, 1		#set $t1 to a nonzero number in case it is already set to 0
-	#la $a0, %deck
-	#li $t2, %deckSize
-loop_randomCard:					#keep getting random card until card is pulled
-	#get random number
+	bltz $t1, negate
+	j done_negate
+
+negate:
+	sub $t1, $zero, $t1
+	j done_negate
+	
+done_negate:
 	li $v0, 42
-	move $a1, $t3
-	syscall
-	move $t2, $v0
-	
+	move $a1, %deckSize
+	syscall					#random number 0-51 in $v0
+	move $t2, $v0			#move random number to $t2
+		
 	add $t2, $t1, $t2			#combine time with random
-	rem $t2, $t2, $t3		#mod 52 to get random number 0-51
 	
-	bnez $v0, done_randomCard
-	li $v0, 42
-	move $a1, $t3
-	syscall				#random number in $v0
-	move $t2, $v0		#save random number in $t2
-	
+	#get $t2 % $t3
+	div $t2, %deckSize		#divide $t2 by 52
+	mfhi $t2				#move remainder into $t2
 	getEntry(%deck, $t2)		#get card value of that index
+	
 	j loop_randomCard
 	
 done_randomCard:

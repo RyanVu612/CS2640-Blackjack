@@ -8,7 +8,7 @@ dashboard: .asciiz "===========================================================\
 options: .asciiz "=\t   (1) Play Game\t   (2) Exit\t\t  =\n"
 dashboardNewLine: .asciiz "=\t\t\t\t\t\t\t  =\n"
 endDashboard: .asciiz "===========================================================\n"
-
+newLine: .asciiz "\n"
 
 # deck of cards. Each index will represent a card with it's value.
 deck: .word 1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10
@@ -51,13 +51,22 @@ play:
 	
 	#first card
 	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
-	addEntry($s1, $s3, $v0)		#put card into dealer hand
+	move $t1, $v0
+	printInt($t1)
+	printString(newLine)
+	addEntry($s1, $s3, $t1)		#put card into dealer hand
 	add $s3, $s3, 1				#increment number of cards dealer has
 	removeEntry($s0, $t2)		#remove card from deck
 	
+	getEntry($s0, $t2)
+	move $t6, $v0
+	
 	#second card
 	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
-	addEntry($s1, $s3, $v0)		#put card into dealer hand
+	move $t1, $v0
+	printInt($t1)
+	printString(newLine)
+	addEntry($s1, $s3, $t1)		#put card into dealer hand
 	add $s3, $s3, 1				#increment number of cards dealer has
 	removeEntry($s0, $t2)		#remove card from deck
 	
@@ -67,18 +76,21 @@ play:
 	
 	#first card
 	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
-	addEntry($s2, $s4, $v0)		#put card into player hand
+	move $t1, $v0
+	printInt($t1)
+	printString(newLine)
+	addEntry($s2, $s4, $t1)		#put card into player hand
 	add $s4, $s4, 1				#increment number of cards player has
 	removeEntry($s0, $t2)		#remove card from deck
 	
 	#second card
 	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
-	addEntry($s2, $s4, $v0)		#put card into player hand
+	move $t1, $v0
+	printInt($t1)
+	printString(newLine)
+	addEntry($s2, $s4, $t1)		#put card into player hand
 	add $s4, $s4, 1				#increment number of cards dealer has
 	removeEntry($s0, $t2)		#remove card from deck
-	
-	lw $t5, 0($s1)
-	printInt($t5)
 	
 	
 	#display the cards of the dealer and the player. Dealer should be on top of player in UI/UX
