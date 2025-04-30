@@ -21,6 +21,8 @@ playerTotal: .asciiz "Your Total: "
 blankCard: .asciiz "X"
 hitStandOption: .asciiz "Would you like to (1) hit or (2) stand?"
 
+thankYou: .asciiz "Thank you for playing! :)"
+
 newLine: .asciiz "\n"
 comma: .asciiz ", "
 
@@ -186,6 +188,8 @@ playAgain:
 	#if no, exit
 
 exit:
+	printString(newLine)
+	printString(thankYou)
 	li $v0, 10
 	syscall
 	
