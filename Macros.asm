@@ -12,10 +12,16 @@
 	syscall
 .end_macro
 
+.macro displayHand(%array)
+	la $a1, %array
+	
+.end_macro
+
 .macro getInt 	# save int in $v0
 	li $v0, 5
 	syscall
 .end_macro
+
 
 .macro randomCard(%deck, %deckSize)	#save random card in $v0
 	li $v0, 0		#set $v0 to zero to ensure code runs at least once
@@ -52,30 +58,30 @@ done_randomCard:
 .end_macro
 
 .macro sumArray(%array, %size)	#sum saved to $v0
-	move $a0, %array	#address of array
+	move $a1, %array	#address of array
 	li $t2, 0		#counter
 	li $t1, 0		#sum
 	
 	add_sumArray:
 		bge $t2, %size, addDone_sumArray
-		lw $t3, 0($a0)		#load array element
+		lw $t3, 0($a1)		#load array element
 		add $t1, $t1, $t3	#sum += element
-		add $a0, $a0, 4		#next element
+		add $a1, $a1, 4		#next element
 		add $t2, $t2, 1		#counter++
 		j add_sumArray
 
 	addDone_sumArray:
 		ble $t1, 21, end_sumArray
-		move $a0, %array	#reset array
-		sub $a0, $a0, 4		#start 4 less than base so that can increment at start of checkAce
+		move $a1, %array	#reset array
+		sub $a1, $a1, 4		#start 4 less than base so that can increment at start of checkAce
 		li $t2, 0			#reset counter
 		
 		
 		checkAce_sumArray:
 			bge $t2, %size, end_sumArray
 			ble $t1, 21, end_sumArray
-			add $a0, $a0, 4
-			lw $t3, 0($a0)		#load array element
+			add $a1, $a1, 4
+			lw $t3, 0($a1)		#load array element
 			bne $t3, 11, checkAce_sumArray		#if not ace, don't care
 			
 			#ace
