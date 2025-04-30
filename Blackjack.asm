@@ -55,14 +55,14 @@ play:
 	# First card
 	randomCard($s0, $s5)			# Get random card in $v0			#save index of card in $t1
 	move $t1, $v0
-	addEntry($s1, $s3, $t1)		# Put card into dealer hand
+	setEntry($s1, $s3, $t1)		# Put card into dealer hand
 	add $s3, $s3, 1				# Increment number of cards dealer has
 	removeEntry($s0, $t2)		# Remove card from deck
 	
 	#second card
 	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
 	move $t1, $v0
-	addEntry($s1, $s3, $t1)		#put card into dealer hand
+	setEntry($s1, $s3, $t1)		#put card into dealer hand
 	add $s3, $s3, 1				#increment number of cards dealer has
 	removeEntry($s0, $t2)		#remove card from deck
 	
@@ -73,14 +73,14 @@ play:
 	#first card
 	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
 	move $t1, $v0
-	addEntry($s2, $s4, $t1)		#put card into player hand
+	setEntry($s2, $s4, $t1)		#put card into player hand
 	add $s4, $s4, 1				#increment number of cards player has
 	removeEntry($s0, $t2)		#remove card from deck
 	
 	#second card
 	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
 	move $t1, $v0
-	addEntry($s2, $s4, $t1)		#put card into player hand
+	setEntry($s2, $s4, $t1)		#put card into player hand
 	add $s4, $s4, 1				#increment number of cards dealer has
 	removeEntry($s0, $t2)		#remove card from deck
 	

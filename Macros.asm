@@ -54,16 +54,38 @@ done_randomCard:
 .macro sumArray(%array, %size)	#sum saved to $v0
 	move $a0, %array	#address of array
 	li $t2, 0		#counter
-	li $v0, 0		#sum
+	li $t1, 0		#sum
 	
-	loop_sumArray:
-		bge $t2, %size, end_sumArray
+	add_sumArray:
+		bge $t2, %size, addDone_sumArray
 		lw $t3, 0($a0)		#load array element
-		add $v0, $v0, $t3	#sum += element
+		add $t1, $t1, $t3	#sum += element
 		add $a0, $a0, 4		#next element
 		add $t2, $t2, 1		#counter++
-		j loop_sumArray
-	end_sumArray:	# Do nothing, exit out of macro
+		j add_sumArray
+
+	addDone_sumArray:
+		ble $t1, 21, end_sumArray
+		move $a0, %array	#reset array
+		sub $a0, $a0, 4		#start 4 less than base so that can increment at start of checkAce
+		li $t2, 0			#reset counter
+		
+		
+		checkAce_sumArray:
+			bge $t2, %size, end_sumArray
+			ble $t1, 21, end_sumArray
+			add $a0, $a0, 4
+			lw $t3, 0($a0)		#load array element
+			bne $t3, 11, checkAce_sumArray		#if not ace, don't care
+			
+			#ace
+			sub $t1, $t1, 10
+			li $t3, 1
+			setEntry(%array, $t2, $t3)
+			j checkAce_sumArray
+		
+	end_sumArray:
+		move $v0, $t1		#save the sum in $v0
 .end_macro
 
 .macro getEntry(%array, %index)		# Save in $v0
@@ -72,7 +94,7 @@ done_randomCard:
 	lw $v0, 0($t3)
 .end_macro
 
-.macro addEntry(%array, %index, %value)
+.macro setEntry(%array, %index, %value)
 	mul $t2, %index, 4
 	add $t3, %array, $t2
 	sw %value, 0($t3)
