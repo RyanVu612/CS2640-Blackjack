@@ -13,7 +13,9 @@ endDashboard: .asciiz "=========================================================
 
 dealerHand: .asciiz "Dealer Hand: "
 playerHand: .asciiz "Player Hand: "
-total: .asciiz "Total: "
+dealerTotal: .asciiz "Dealer Total: " 
+playerTotal: .asciiz "Your Total: "
+blankCard: .asciiz "X"
 newLine: .asciiz "\n"
 comma: .asciiz ", "
 
@@ -88,55 +90,21 @@ play:
 	setEntry($s2, $s4, $t1)		#put card into player hand
 	add $s4, $s4, 1				#increment number of cards dealer has
 	removeEntry($s0, $t2)		#remove card from deck
+
+
+	#display the cards of the dealer and the player. Dealer should be on top of player in UI/UX
+	#only display the first of the dealers cards
 	
-	#debugging, print cards dealt to dealer and player
-	li $t5, 0
-	getEntry($s1, $t5)
-	move $t6, $v0
-	printInt($t6)
-	printString(newLine)
-	
-	li $t5, 1
-	getEntry($s1, $t5)
-	move $t6, $v0
-	printInt($t6)
-	printString(newLine)
-	
-	sumArray($s1, $s3)
-	move $t6 $v0
-	printInt($t6)
-	printString(newLine)
-	
-	li $t5, 0
-	getEntry($s2, $t5)
-	move $t6, $v0
-	printInt($t6)
-	printString(newLine)
-	
-	li $t5, 1
-	getEntry($s2, $t5)
-	move $t6, $v0
-	printInt($t6)
-	printString(newLine)
-	
-	sumArray($s2, $s4)
-	move $t6 $v0
-	printInt($t6)
-	printString(newLine)
-	
+	#manually display dealer first hand, since only show first card
 	printString(newLine)
 	printString(dealerHand)
-	displayHand($s1, $s3)
+	displayDealerHand($s1)
 	printString(newLine)
 	
+	printString(newLine)
 	printString(playerHand)
 	displayHand($s2, $s4)
 	printString(newLine)
-	
-	
-	
-	#display the cards of the dealer and the player. Dealer should be on top of player in UI/UX
-	#only display the first of the dealers cards
 	
 	#ask player if want to hit or stand
 	

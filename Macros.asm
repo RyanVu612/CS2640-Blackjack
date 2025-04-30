@@ -12,6 +12,18 @@
 	syscall
 .end_macro
 
+
+.macro displayDealerHand(%array)	#for when dealer only shows one card
+	move $a1, %array
+	lw $t1, 0($a1)
+	printInt($t1)
+	printString(comma)
+	printString(blankCard)
+	printString(newLine)
+	printString(dealerTotal)
+	printInt($t1)
+.end_macro
+
 .macro displayHand(%array, %size)
 	move $a1, %array
 	li $t2, 0		#counter
@@ -30,7 +42,7 @@ firstCard_displayHand:
 	
 total_displayHand:
 	printString(newLine)
-	printString(total)
+	printString(playerTotal)
 	sumArray(%array, %size)
 	move $t3, $v0
 	printInt($t3)
