@@ -64,42 +64,34 @@ play:
 	
 	li $s5, 52 	#deckSize
 	
+	li $s6, 0	# dealer total
+	li $s7, 0	# player total
+
+	
 	# Randomly select 2 cards for the dealer		save into $s1
 	# Remove those 2 cards from deck as you take them
 	
 	# First card
-	randomCard($s0, $s5)			# Get random card in $v0			#save index of card in $t1
-	move $t1, $v0
-	setEntry($s1, $s3, $t1)		# Put card into dealer hand
-	add $s3, $s3, 1				# Increment number of cards dealer has
-	removeEntry($s0, $t2)		# Remove card from deck
+	drawCard($s1, $s3, $s6)
 	
 	#second card
-	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
-	move $t1, $v0
-	setEntry($s1, $s3, $t1)		#put card into dealer hand
-	add $s3, $s3, 1				#increment number of cards dealer has
-	removeEntry($s0, $t2)		#remove card from deck
+	drawCard($s1, $s3, $s6)
 	
 	
 	#randomly select 2 cards for the player		save into $s2
 	#remove those 2 cards from deck as you take them
 	
 	#first card
-	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
-	move $t1, $v0
-	setEntry($s2, $s4, $t1)		#put card into player hand
-	add $s4, $s4, 1				#increment number of cards player has
-	removeEntry($s0, $t2)		#remove card from deck
+	drawCard($s2, $s4, $s7)
 	
 	#second card
-	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
-	move $t1, $v0
-	setEntry($s2, $s4, $t1)		#put card into player hand
-	add $s4, $s4, 1				#increment number of cards dealer has
-	removeEntry($s0, $t2)		#remove card from deck
+	drawCard($s2, $s4, $s7)
 
-
+	
+	beq $t3, 21, win #if user gets 21 in their first two cards, they win
+	
+	
+hitStandMenu:
 	#display the cards of the dealer and the player. Dealer should be on top of player in UI/UX
 	#only display the first of the dealers cards
 	
@@ -111,12 +103,10 @@ play:
 	
 	printString(newLine)
 	printString(playerHand)
-	displayHand($s2, $s4)		#$t3 still holds total
+	displayHand($s2, $s4, $s7)
 	printString(newLine)
 	
-	beq $t3, 21, win
-	#ask player if want to hit or stand
-hitStandMenu:
+	#ask player if they want to hit or stand
 	printString(newLine)
 	printString(hitStandOption)
 	printString(newLine)
@@ -124,7 +114,7 @@ hitStandMenu:
 	move $t0, $v0
 	beq $t0, 1, hit
 	beq $t0, 2, stand
-	j hitStandMenu
+	j hitStandMenu                  # loop until get valid input
 	
 	
 	#-------------HIT------------#
@@ -134,12 +124,12 @@ hitStandMenu:
 	#if > 21, bust
 	
 hit:
-	#display total for player
+	#draw a random card for the user
+	drawCard($s2, $s4, $s7)
 	
-	#ask player if want to hit or stand
-	
-	#if hit, loop back
-	
+	bgt $s7, 21, bust
+	j hitStandMenu #reprompt user to hit or stand
+
 	
 	#-------------STAND-----------#
 	#display dealers second card
