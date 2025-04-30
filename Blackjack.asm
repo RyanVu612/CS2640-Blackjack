@@ -10,13 +10,16 @@ options: .asciiz "=\t   (1) Play Game\t   (2) Exit\t\t  =\n"
 dashboardNewLine: .asciiz "=\t\t\t\t\t\t\t  =\n"
 dashboardNote: .asciiz "=\tNote: Make sure run speed is not instant\t  =\n"
 endDashboard: .asciiz "===========================================================\n"
-option: .asciiz "\nChoose your option: "
+dashboardOption: .asciiz "\nChoose your option: "
 
 dealerHand: .asciiz "Dealer Hand: "
 playerHand: .asciiz "Player Hand: "
 dealerTotal: .asciiz "Dealer Total: " 
 playerTotal: .asciiz "Your Total: "
+
 blankCard: .asciiz "X"
+hitStandOption: .asciiz "Would you like to (1) hit or (2) stand?"
+
 newLine: .asciiz "\n"
 comma: .asciiz ", "
 
@@ -36,7 +39,7 @@ menu:
 	printString(dashboardNewLine)
 	printString(dashboardNote)
 	printString(endDashboard)
-	printString(option)
+	printString(dashboardOption)
 	
 	# Save user int
 	getInt
@@ -105,10 +108,14 @@ play:
 	
 	printString(newLine)
 	printString(playerHand)
-	displayHand($s2, $s4)
+	displayHand($s2, $s4)		#$t3 still holds total
 	printString(newLine)
 	
+	beq $t3, 21, win
 	#ask player if want to hit or stand
+	printString(newLine)
+	printString(hitStandOption)
+	
 	
 	#-------------HIT------------#
 	#randomly select 1 card for the player 		save into $s2
@@ -116,6 +123,7 @@ play:
 	#remove this card from deck
 	#if > 21, bust
 	
+hit:
 	#display total for player
 	
 	#ask player if want to hit or stand
@@ -127,6 +135,7 @@ play:
 	#display dealers second card
 	#if < 16, select random card from deck and remove from deck. Save into $s1
 	
+stand:
 	#dealer draws cards until reaches 17+ or busts
 	
 	# if 21 > dealer > 17 compare to player
@@ -139,23 +148,32 @@ play:
 	#player lost
 	#display the cards of everyone
 	
+bust:
+
 	#------------WIN------------#
 	#display winning screen
 	#winning reward (double money, counter maybe)
 	#go to play again screen
 	
+win:
+
 	#------------TIE------------#
 	#display tie screen
 	#go to play again screen
 	
+tie:
+
 	#------------LOSE-----------#
 	#display losing screen
 	#losing consequence (lose money, counter maybe)
 	#go to play again screen
 	
+lose:
+
 	#---------Play-Again--------#
 	#prompt user if want to play again
 	
+playAgain:
 	#if yes loop back to play
 	#if no, exit
 

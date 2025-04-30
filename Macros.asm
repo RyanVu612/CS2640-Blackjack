@@ -48,7 +48,6 @@ total_displayHand:
 	printInt($t3)
 	printString(newLine)
 	
-	
 done_displayHand:
 .end_macro
 
