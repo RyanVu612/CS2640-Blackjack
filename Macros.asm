@@ -12,9 +12,32 @@
 	syscall
 .end_macro
 
-.macro displayHand(%array)
-	la $a1, %array
+.macro displayHand(%array, %size)
+	move $a1, %array
+	li $t2, 0		#counter
 	
+loop_displayHand:
+	bge $t2, %size, total_displayHand
+	beqz $t2, firstCard_displayHand		#formatting
+	printString(comma)					#if not firs card, will fall through to next loop
+
+firstCard_displayHand:
+	lw $t3, 0($a1)
+	printInt($t3)
+	add $a1, $a1, 4			#next element
+	add $t2, $t2, 1			#increment counter
+	j loop_displayHand
+	
+total_displayHand:
+	printString(newLine)
+	printString(total)
+	sumArray(%array, %size)
+	move $t3, $v0
+	printInt($t3)
+	printString(newLine)
+	
+	
+done_displayHand:
 .end_macro
 
 .macro getInt 	# save int in $v0

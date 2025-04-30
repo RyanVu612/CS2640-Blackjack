@@ -10,7 +10,10 @@ options: .asciiz "=\t   (1) Play Game\t   (2) Exit\t\t  =\n"
 dashboardNewLine: .asciiz "=\t\t\t\t\t\t\t  =\n"
 dashboardNote: .asciiz "=\tNote: Make sure run speed is not instant\t  =\n"
 endDashboard: .asciiz "===========================================================\n"
+
+total: .asciiz "Total: "
 newLine: .asciiz "\n"
+comma: .asciiz ", "
 
 # deck of cards. Each index will represent a card with it's value.
 deck: .word 2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11
@@ -118,6 +121,14 @@ play:
 	move $t6 $v0
 	printInt($t6)
 	printString(newLine)
+	
+	printString(newLine)
+	displayHand($s1, $s3)
+	printString(newLine)
+	
+	displayHand($s2, $s4)
+	printString(newLine)
+	
 	
 	
 	#display the cards of the dealer and the player. Dealer should be on top of player in UI/UX
