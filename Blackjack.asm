@@ -1,6 +1,6 @@
-# CS2640 - 12 PM
-# Blackjack
-# Ryan Vu, Joseline Ly, Caitlyn Hue, Sam Klapper, Bryan Dinh
+#Bryan Dinh, Caitlyn Hue, Joseline Ly, Sam Klapper, Ryan Vu
+#CS2640
+#BlackJack
 
 .include "Macros.asm"
 
@@ -10,6 +10,7 @@ options: .asciiz "=\t   (1) Play Game\t   (2) Exit\t\t  =\n"
 dashboardNewLine: .asciiz "=\t\t\t\t\t\t\t  =\n"
 dashboardNote: .asciiz "=\tNote: Make sure run speed is not instant\t  =\n"
 endDashboard: .asciiz "===========================================================\n"
+option: .asciiz "\nChoose your option: "
 
 dealerHand: .asciiz "Dealer Hand: "
 playerHand: .asciiz "Player Hand: "
@@ -35,6 +36,7 @@ menu:
 	printString(dashboardNewLine)
 	printString(dashboardNote)
 	printString(endDashboard)
+	printString(option)
 	
 	# Save user int
 	getInt
