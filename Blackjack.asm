@@ -11,6 +11,8 @@ dashboardNewLine: .asciiz "=\t\t\t\t\t\t\t  =\n"
 dashboardNote: .asciiz "=\tNote: Make sure run speed is not instant\t  =\n"
 endDashboard: .asciiz "===========================================================\n"
 
+dealerHand: .asciiz "Dealer Hand: "
+playerHand: .asciiz "Player Hand: "
 total: .asciiz "Total: "
 newLine: .asciiz "\n"
 comma: .asciiz ", "
@@ -123,9 +125,11 @@ play:
 	printString(newLine)
 	
 	printString(newLine)
+	printString(dealerHand)
 	displayHand($s1, $s3)
 	printString(newLine)
 	
+	printString(playerHand)
 	displayHand($s2, $s4)
 	printString(newLine)
 	
