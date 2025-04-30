@@ -24,7 +24,7 @@
 	printInt($t1)
 .end_macro
 
-.macro displayHand(%array, %size)
+.macro displayHand(%array, %size, %total)
 	move $a1, %array
 	li $t2, 0		#counter
 	
@@ -43,9 +43,7 @@ firstCard_displayHand:
 total_displayHand:
 	printString(newLine)
 	printString(playerTotal)
-	sumArray(%array, %size)
-	move $t3, $v0
-	printInt($t3)
+	printInt(%total)
 	printString(newLine)
 	
 done_displayHand:
@@ -116,6 +114,7 @@ done_randomCard:
 			ble $t1, 21, end_sumArray
 			add $a1, $a1, 4
 			lw $t3, 0($a1)		#load array element
+			add $t2, $t2, 1		#increment counter
 			bne $t3, 11, checkAce_sumArray		#if not ace, don't care
 			
 			#ace
@@ -146,3 +145,13 @@ done_randomCard:
 	sw $zero, 0($t3)
 .end_macro
 
+.macro drawCard(%array, %index, %total)
+	randomCard($s0, $s5)			# Get random card in $v0			#save index of card in $t1
+	move $t1, $v0
+	setEntry(%array, %index, $t1)		# Put card into person's hand
+	add %index, %index, 1			# Increment number of cards person has
+	sumArray(%array, %index)		# add value to total
+	move %total, $v0
+
+	removeEntry($s0, $t2)		# Remove card from deck
+.end_macro
