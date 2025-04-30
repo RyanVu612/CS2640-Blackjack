@@ -6,11 +6,12 @@
 
 .data
 dashboard: .asciiz "===========================================================\n=\t _     _            _    _            _\t\t  =\n=\t| |   | |          | |  (_)          | |\t  =\n=\t| |__ | | __ _  ___| | ___  __ _  ___| | __\t  =\n=\t| '_ \\| |/ _` |/ __| |/ / |/ _` |/ __| |/ /\t  =\n=\t| |_) | | (_| | (__|   <| | (_| | (__|   <\t  =\n=\t|_.__/|_|\\__,_|\\___|_|\\_\\ |\\__,_|\\___|_|\\_\\\t  =\n=\t                       _/ |\t\t\t  =\n=\t                      |__/\t\t\t  =\n"
-options: .asciiz "=\t   (1) Play Game\t   (2) Exit\t\t  =\n"
+dashboardOptions: .asciiz "=\t   (1) Play Game\t   (2) Exit\t\t  =\n"
 dashboardNewLine: .asciiz "=\t\t\t\t\t\t\t  =\n"
 dashboardNote: .asciiz "=\tNote: Make sure run speed is not instant\t  =\n"
 endDashboard: .asciiz "===========================================================\n"
-dashboardOption: .asciiz "\nChoose your option: "
+
+option: .asciiz "\nChoose your option: "
 
 dealerHand: .asciiz "Dealer Hand: "
 playerHand: .asciiz "Player Hand: "
@@ -35,11 +36,11 @@ menu:
 	# Print out the dashboard
 	printString(dashboard)
 	printString(dashboardNewLine)
-	printString(options)
+	printString(dashboardOptions)
 	printString(dashboardNewLine)
 	printString(dashboardNote)
 	printString(endDashboard)
-	printString(dashboardOption)
+	printString(option)
 	
 	# Save user int
 	getInt
@@ -113,8 +114,15 @@ play:
 	
 	beq $t3, 21, win
 	#ask player if want to hit or stand
+hitStandMenu:
 	printString(newLine)
 	printString(hitStandOption)
+	printString(newLine)
+	getInt
+	move $t0, $v0
+	beq $t0, 1, hit
+	beq $t0, 2, stand
+	j hitStandMenu
 	
 	
 	#-------------HIT------------#
