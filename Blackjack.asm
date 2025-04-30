@@ -8,12 +8,20 @@
 dashboard: .asciiz "===========================================================\n=\t _     _            _    _            _\t\t  =\n=\t| |   | |          | |  (_)          | |\t  =\n=\t| |__ | | __ _  ___| | ___  __ _  ___| | __\t  =\n=\t| '_ \\| |/ _` |/ __| |/ / |/ _` |/ __| |/ /\t  =\n=\t| |_) | | (_| | (__|   <| | (_| | (__|   <\t  =\n=\t|_.__/|_|\\__,_|\\___|_|\\_\\ |\\__,_|\\___|_|\\_\\\t  =\n=\t                       _/ |\t\t\t  =\n=\t                      |__/\t\t\t  =\n"
 options: .asciiz "=\t   (1) Play Game\t   (2) Exit\t\t  =\n"
 dashboardNewLine: .asciiz "=\t\t\t\t\t\t\t  =\n"
+dashboardNote: .asciiz "=\tNote: Make sure run speed is not instant\t  =\n"
 endDashboard: .asciiz "===========================================================\n"
 option: .asciiz "\nChoose your option: "
 
+dealerHand: .asciiz "Dealer Hand: "
+playerHand: .asciiz "Player Hand: "
+dealerTotal: .asciiz "Dealer Total: " 
+playerTotal: .asciiz "Your Total: "
+blankCard: .asciiz "X"
+newLine: .asciiz "\n"
+comma: .asciiz ", "
 
 # deck of cards. Each index will represent a card with it's value.
-deck: .word 1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10
+deck: .word 2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11
 dealer: .space 44
 player: .space 44
 
@@ -21,67 +29,84 @@ player: .space 44
 .text
 main:
 menu:
-	#Print out the dashboard
+	# Print out the dashboard
 	printString(dashboard)
 	printString(dashboardNewLine)
 	printString(options)
 	printString(dashboardNewLine)
+	printString(dashboardNote)
 	printString(endDashboard)
 	printString(option)
 	
 	# Save user int
 	getInt
-	move $t0, $v0
+	move $t0, $v0		# Store user input in $t0
 	beq $t0, 1, play
 	beq $t0, 2, exit
 	j menu		# loop until get valid input
 	
 play:
 	#-----------Load-Game-----------#
-	#load deck
+	# Load deck
 	la $s0, deck 		# $s0 = deck
 	
-	la $s1, dealer		#dealer hand
-	la $s2, player		#player hand
+	la $s1, dealer		# Dealer hand
+	la $s2, player		# Player hand
 	
-	li $s3, 0	#number of cards dealer has
-	li $s4, 0	#number of cards player has
+	li $s3, 0	# Number of cards dealer has
+	li $s4, 0	# Number of cards player has
 	
+	li $s5, 52 	#deckSize
 	
-	#randomly select 2 cards for the dealer		save into $s1
-	#remove those 2 cards from deck as you take them
+	# Randomly select 2 cards for the dealer		save into $s1
+	# Remove those 2 cards from deck as you take them
 	
-	#first card
-	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
-	addEntry($s1, $s3, $v0)		#put card into dealer hand
-	add $s3, $s3, 1				#increment number of cards dealer has
-	removeEntry($s0, $t1)		#remove card from deck
+	# First card
+	randomCard($s0, $s5)			# Get random card in $v0			#save index of card in $t1
+	move $t1, $v0
+	setEntry($s1, $s3, $t1)		# Put card into dealer hand
+	add $s3, $s3, 1				# Increment number of cards dealer has
+	removeEntry($s0, $t2)		# Remove card from deck
 	
 	#second card
-	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
-	addEntry($s1, $s3, $v0)		#put card into dealer hand
+	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
+	move $t1, $v0
+	setEntry($s1, $s3, $t1)		#put card into dealer hand
 	add $s3, $s3, 1				#increment number of cards dealer has
-	removeEntry($s0, $t1)		#remove card from deck
+	removeEntry($s0, $t2)		#remove card from deck
 	
 	
 	#randomly select 2 cards for the player		save into $s2
 	#remove those 2 cards from deck as you take them
 	
 	#first card
-	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
-	addEntry($s2, $s4, $v0)		#put card into player hand
+	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
+	move $t1, $v0
+	setEntry($s2, $s4, $t1)		#put card into player hand
 	add $s4, $s4, 1				#increment number of cards player has
-	removeEntry($s0, $t1)		#remove card from deck
+	removeEntry($s0, $t2)		#remove card from deck
 	
 	#second card
-	randomCard($s0, 52)			#get random card in $v0			#save index of card in $t1
-	addEntry($s2, $s4, $v0)		#put card into player hand
+	randomCard($s0, $s5)			#get random card in $v0			#save index of card in $t1
+	move $t1, $v0
+	setEntry($s2, $s4, $t1)		#put card into player hand
 	add $s4, $s4, 1				#increment number of cards dealer has
-	removeEntry($s0, $t1)		#remove card from deck
-	
-	
+	removeEntry($s0, $t2)		#remove card from deck
+
+
 	#display the cards of the dealer and the player. Dealer should be on top of player in UI/UX
 	#only display the first of the dealers cards
+	
+	#manually display dealer first hand, since only show first card
+	printString(newLine)
+	printString(dealerHand)
+	displayDealerHand($s1)
+	printString(newLine)
+	
+	printString(newLine)
+	printString(playerHand)
+	displayHand($s2, $s4)
+	printString(newLine)
 	
 	#ask player if want to hit or stand
 	
