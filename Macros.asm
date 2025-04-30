@@ -20,7 +20,7 @@
 	printString(comma)
 	printString(blankCard)
 	printString(newLine)
-	printString(dealerTotal)
+	printString(total)
 	printInt($t1)
 .end_macro
 
@@ -42,7 +42,7 @@ firstCard_displayHand:
 	
 total_displayHand:
 	printString(newLine)
-	printString(playerTotal)
+	printString(total)
 	printInt(%total)
 	printString(newLine)
 	
