@@ -52,7 +52,7 @@ done_randomCard:
 .end_macro
 
 .macro sumArray(%array, %size)	#sum saved to $v0
-	la $a0, %array	#address of array
+	move $a0, %array	#address of array
 	li $t2, 0		#counter
 	li $v0, 0		#sum
 	

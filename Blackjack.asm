@@ -97,6 +97,11 @@ play:
 	printInt($t6)
 	printString(newLine)
 	
+	sumArray($s1, $s3)
+	move $t6 $v0
+	printInt($t6)
+	printString(newLine)
+	
 	li $t5, 0
 	getEntry($s2, $t5)
 	move $t6, $v0
@@ -106,6 +111,11 @@ play:
 	li $t5, 1
 	getEntry($s2, $t5)
 	move $t6, $v0
+	printInt($t6)
+	printString(newLine)
+	
+	sumArray($s2, $s4)
+	move $t6 $v0
 	printInt($t6)
 	printString(newLine)
 	
