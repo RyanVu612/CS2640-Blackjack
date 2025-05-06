@@ -40,6 +40,12 @@ deck: .word 2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,
 dealer: .space 44
 player: .space 44
 
+#Face card labels 
+faceJ: .asciiz "J"
+faceQ: .asciiz "Q"
+faceK: .asciiz "K"
+faceA: .asciiz "A"
+
 
 .text
 main:
