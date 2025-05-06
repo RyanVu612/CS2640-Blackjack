@@ -31,6 +31,7 @@ dealerBustString: .asciiz "\n***Dealer Busts\n"
 TIE: .asciiz "TIE!!!"
 YOULOSE: .asciiz "YOU LOSE!!!!"
 thankYou: .asciiz "Thank you for playing! :)"
+playAgainPrompt: .asciiz "\nWould you like to (1) Play Again or (2) Quit?\n"
 
 newLine: .asciiz "\n"
 comma: .asciiz ", "
@@ -101,10 +102,10 @@ play:
 	
 	
 hitStandMenu:
-	#display the cards of the dealer and the player. Dealer should be on top of player in UI/UX
-	#only display the first of the dealers cards
+	# display the cards of the dealer and the player. Dealer should be on top of player in UI/UX
+	# only display the first of the dealers cards
 	
-	#manually display dealer first hand, since only show first card
+	# manually display dealer first hand, since only show first card
 	printString(newLine)
 	printString(dealerHand)
 	displayDealerHand($s1)
@@ -152,8 +153,8 @@ stand:
 	
 	
 #------------BUST------------#
-#player lost
-#display the cards of everyone
+# player lost
+# display the cards of everyone
 	
 bust:
 	printString(bustString)
@@ -214,7 +215,7 @@ win:
 	
 tie:
 	printString(TIE)
-	j exit
+	j playAgain
 
 #------------LOSE-----------#
 # display losing screen
@@ -223,21 +224,21 @@ tie:
 	
 lose:
 	printString(YOULOSE)
-	j exit
+	j playAgain
 
 #---------Play-Again--------#
 #prompt user if want to play again
 	
 playAgain:
-	#if yes loop back to play
-	#if no, exit
+	printString(playAgainPrompt)
+	getInt
+	move $t0, $v0
+	beq $t0, 1, play
+	beq $t0, 2, exit
 
 exit:
 	printString(newLine)
 	printString(thankYou)
 	li $v0, 10
 	syscall
-	
-	
-	
 	
