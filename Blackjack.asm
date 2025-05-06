@@ -126,11 +126,11 @@ hitStandMenu:
 	j hitStandMenu                  # loop until get valid input
 	
 	
-	#-------------HIT------------#
-	#randomly select 1 card for the player 		save into $s2
-	#display card to player alongside other cards
-	#remove this card from deck
-	#if > 21, bust
+#-------------HIT------------#
+#randomly select 1 card for the player 		save into $s2
+#display card to player alongside other cards
+#remove this card from deck
+#if > 21, bust
 	
 hit:
 	#draw a random card for the user
@@ -140,9 +140,9 @@ hit:
 	j hitStandMenu #reprompt user to hit or stand
 
 	
-	#-------------STAND-----------#
-	#display dealers second card
-	#if < 16, select random card from deck and remove from deck. Save into $s1
+#-------------STAND-----------#
+#display dealers second card
+#if < 16, select random card from deck and remove from deck. Save into $s1
 	
 stand:
 	# if 21 > dealer > 17 compare to player
@@ -151,9 +151,9 @@ stand:
 	#if player < dealer, player loses
 	
 	
-	#------------BUST------------#
-	#player lost
-	#display the cards of everyone
+#------------BUST------------#
+#player lost
+#display the cards of everyone
 	
 bust:
 	printString(bustString)
@@ -170,8 +170,8 @@ bust:
 	j lose 			# else, player loses
 	
 	
-	#---------DEALERDRAW--------#
-	#dealer draws until reaches 17+ or busts
+#---------DEALERDRAW--------#
+#dealer draws until reaches 17+ or busts
 	
 dealerDraw:
 	bgt $s6, 21, dealerBust
@@ -188,39 +188,45 @@ dealerDraw:
 	displayHand($s2, $s4, $s7)
 	j dealerDraw # repeat until dealer reaches 17+
 
-	
+#---------DEALERSTAND--------#
+# dealer stands with current cards
+
 dealerStand:
 	printString(dealerStandString)
 	jr $ra
 	
+#---------DEALERBUST--------#
+# dealer busts, over 21
 dealerBust:
 	printString(dealerBustString)
 	jr $ra
 	
-	#------------WIN------------#
-	#display winning screen
-	#winning reward (double money, counter maybe)
-	#go to play again screen
-	
-win:
+#------------WIN------------#
+# display winning screen
+# winning reward (double money, counter maybe)
+# go to play again screen
 
-	#------------TIE------------#
-	#display tie screen
-	#go to play again screen
+win:
+	j playAgain
+#------------TIE------------#
+# display tie screen
+# go to play again screen
 	
 tie:
 	printString(TIE)
 	j exit
-	#------------LOSE-----------#
-	#display losing screen
-	#losing consequence (lose money, counter maybe)
-	#go to play again screen
+
+#------------LOSE-----------#
+# display losing screen
+# losing consequence (lose money, counter maybe)
+# go to play again screen
 	
 lose:
 	printString(YOULOSE)
 	j exit
-	#---------Play-Again--------#
-	#prompt user if want to play again
+
+#---------Play-Again--------#
+#prompt user if want to play again
 	
 playAgain:
 	#if yes loop back to play
