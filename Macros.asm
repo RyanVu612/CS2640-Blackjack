@@ -35,9 +35,12 @@
 	printInt($v0)
 	j afterDealerFirst
 
-dealerPrintJ: printString(faceJ); j afterDealerFirst
-dealerPrintQ: printString(faceQ); j afterDealerFirst
-dealerPrintK: printString(faceK); j afterDealerFirst
+dealerPrintJ: printString(faceJ)
+ j afterDealerFirst
+dealerPrintQ: printString(faceQ)
+ j afterDealerFirst
+dealerPrintK: printString(faceK)
+j afterDealerFirst
 dealerPrintA: printString(faceA)
 
 afterDealerFirst:
@@ -54,7 +57,6 @@ afterDealerFirst:
 #updated display hand
 #macros will print JQKA based on the card index 
 .macro displayHand(%array, %size, %total)
-	.macro displayHand(%array, %size, %total)
 	move $a1, %array
 	li $t2, 0
 
@@ -84,9 +86,12 @@ firstCard:
 	printInt($v0)
 	j continueHand
 
-printJ: printString(faceJ); j continueHand
-printQ: printString(faceQ); j continueHand
-printK: printString(faceK); j continueHand
+printJ: printString(faceJ) 
+j continueHand
+printQ: printString(faceQ)
+j continueHand
+printK: printString(faceK)
+ j continueHand
 printA: printString(faceA)
 
 continueHand:
