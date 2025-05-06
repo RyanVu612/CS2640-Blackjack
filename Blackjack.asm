@@ -28,6 +28,7 @@ dealerStandString: .asciiz "\n***Dealer Stands\n"
 dealerDrawString: .asciiz "\n***Dealer Draws\n"
 dealerBustString: .asciiz "\n***Dealer Busts\n"
 
+WIN: .asciiz "YOU WIN!!!!"
 TIE: .asciiz "TIE!!!"
 YOULOSE: .asciiz "YOU LOSE!!!!"
 thankYou: .asciiz "Thank you for playing! :)"
@@ -146,10 +147,23 @@ hit:
 #if < 16, select random card from deck and remove from deck. Save into $s1
 	
 stand:
-	# if 21 > dealer > 17 compare to player
-	#if player > dealer, player wins
-	#if player = dealer, draw
-	#if player < dealer, player loses
+	printString(standString)
+	
+	# Display current hands
+	printString(dealerTurn)
+	printString(dealerHand)
+	displayHand($s1, $s3, $s6)
+	printString(newLine)
+	printString(playerHand)
+	displayHand($s2, $s4, $s7)
+	
+	jal dealerDraw 		# dealer's turn
+	 
+	bgt $s6, 21, win	#if dealer busts, player wins
+	bgt $s7, $s6, win	#if player > dealer, player wins
+	bge $s7, $s6, tie	#if player = dealer, draw
+	
+	j lose			#else, player < dealer, player loses
 	
 	
 #------------BUST------------#
@@ -158,6 +172,8 @@ stand:
 	
 bust:
 	printString(bustString)
+	
+	# Display current hands
 	printString(dealerTurn)
 	printString(dealerHand)
 	displayHand($s1, $s3, $s6)
@@ -208,7 +224,9 @@ dealerBust:
 # go to play again screen
 
 win:
+	printString(WIN)
 	j playAgain
+	
 #------------TIE------------#
 # display tie screen
 # go to play again screen
