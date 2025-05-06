@@ -26,57 +26,27 @@
 
 .macro displayHand(%array, %size, %total)
 	move $a1, %array
-	li $t2, 0
-
+	li $t2, 0		#counter
+	
 loop_displayHand:
-	bge $t2, %size, done_displayHand
-	beqz $t2, firstCard
-	printString(comma)
+	bge $t2, %size, total_displayHand
+	beqz $t2, firstCard_displayHand		#formatting
+	printString(comma)					#if not firs card, will fall through to next loop
 
-firstCard:
-	lw $t3, 0($a1)         # card index
-	move $t4, $t3
-	divu $t4, $t4, 13
-	mfhi $t4               # t4 = index % 13
-
-	# Face cards
-	li $t5, 9
-	beq $t4, $t5, printJ
-	li $t5, 10
-	beq $t4, $t5, printQ
-	li $t5, 11
-	beq $t4, $t5, printK
-	li $t5, 12
-	beq $t4, $t5, printA
-
-	# Print numeric value
-	getEntry($s0, $t3)
-	printInt($v0)
-	j cont_display
-
-printJ:
-	printString(faceJ)
-	j cont_display
-printQ:
-	printString(faceQ)
-	j cont_display
-printK:
-	printString(faceK)
-	j cont_display
-printA:
-	printString(faceA)
-
-cont_display:
-	add $a1, $a1, 4
-	add $t2, $t2, 1
+firstCard_displayHand:
+	lw $t3, 0($a1)
+	printInt($t3)
+	add $a1, $a1, 4			#next element
+	add $t2, $t2, 1			#increment counter
 	j loop_displayHand
-
-done_displayHand:
+	
+total_displayHand:
 	printString(newLine)
 	printString(total)
 	printInt(%total)
+	printString(newLine)
 	
-
+done_displayHand:
 .end_macro
 
 .macro getInt 	# save int in $v0
@@ -86,45 +56,72 @@ done_displayHand:
 
 
 .macro randomCard(%deck, %deckSize)	#save random card in $v0
-	# Get system time as seed
+	li $v0, 0		#set $v0 to zero to ensure code runs at least once
+loop_randomCard:			#keep getting random card until card is pulled
+	bnez $v0, done_randomCard
+	#get current time
 	li $v0, 30
 	syscall
-	move $t1, $a0
+	move $t1, $a0		#save time in $t1
+	
+	bltz $t1, negate
+	j done_negate
 
-	# Generate a safe base random index (0 to 51)
+negate:
+	sub $t1, $zero, $t1
+	j done_negate
+	
+done_negate:
 	li $v0, 42
-	li $a1, 52        # explicitly bound max deck size
-	syscall
-	move $t2, $v0
-
-	# Mix with time for better spread
-	add $t2, $t2, $t1
-
-	# Ensure result stays in bounds (0–51)
-	divu $t2, $t2, %deckSize
-	mfhi $t2
-
-	getEntry(%deck, $t2)  # $v0 = card value
+	move $a1, %deckSize
+	syscall					#random number 0-51 in $v0
+	move $t2, $v0			#move random number to $t2
+		
+	add $t2, $t1, $t2			#combine time with random
+	
+	#get $t2 % $t3
+	div $t2, %deckSize		#divide $t2 by 52
+	mfhi $t2				#move remainder into $t2
+	getEntry(%deck, $t2)		#get card value of that index
+	
+	j loop_randomCard
 	
 done_randomCard:
 .end_macro
 
 .macro sumArray(%array, %size)	#sum saved to $v0
-	move $a1, %array
-	li $t1, 0
-	li $t2, 0
+	move $a1, %array	#address of array
+	li $t2, 0		#counter
+	li $t1, 0		#sum
+	
+	add_sumArray:
+		bge $t2, %size, addDone_sumArray
+		lw $t3, 0($a1)		#load array element
+		add $t1, $t1, $t3	#sum += element
+		add $a1, $a1, 4		#next element
+		add $t2, $t2, 1		#counter++
+		j add_sumArray
 
-sum_loop:
-	bge $t2, %size, sum_done
-	lw $t3, 0($a1)          # index
-	getEntry($s0, $t3)      # $v0 = value
-	add $t1, $t1, $v0
-	add $a1, $a1, 4
-	add $t2, $t2, 1
-	j sum_loop
-
-sum_done:
-	move $v0, $t1
+	addDone_sumArray:
+		ble $t1, 21, end_sumArray
+		move $a1, %array	#reset array
+		sub $a1, $a1, 4		#start 4 less than base so that can increment at start of checkAce
+		li $t2, 0			#reset counter
+		
+		
+		checkAce_sumArray:
+			bge $t2, %size, end_sumArray
+			ble $t1, 21, end_sumArray
+			add $a1, $a1, 4
+			lw $t3, 0($a1)		#load array element
+			add $t2, $t2, 1		#increment counter
+			bne $t3, 11, checkAce_sumArray		#if not ace, don't care
+			
+			#ace
+			sub $t1, $t1, 10
+			li $t3, 1
+			setEntry(%array, $t2, $t3)
+			j checkAce_sumArray
 		
 	end_sumArray:
 		move $v0, $t1		#save the sum in $v0
@@ -148,13 +145,11 @@ sum_done:
 	sw $zero, 0($t3)
 .end_macro
 
+#now storeing cards index not value 
 .macro drawCard(%array, %index, %total)
-	randomCard($s0, $s5)        # $v0 = card value
-	move $t1, $v0
-	setEntry(%array, %index, $t1)
+	randomCard($s0, $s5)        # $t2 = index, $v0 = card value
+	setEntry(%array, %index, $t2)  # store index into hand
 	add %index, %index, 1
 	sumArray(%array, %index)
 	move %total, $v0
-	
-	
 .end_macro
