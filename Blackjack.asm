@@ -31,8 +31,13 @@ dealerBustString: .asciiz "\n***Dealer Busts\n"
 WIN: .asciiz "YOU WIN!!!!"
 TIE: .asciiz "TIE!!!"
 YOULOSE: .asciiz "YOU LOSE!!!!"
-thankYou: .asciiz "Thank you for playing! :)"
+
 playAgainPrompt: .asciiz "\nWould you like to (1) Play Again or (2) Quit?\n"
+finalScreen: .asciiz "==================================================================\n=\t  __ _  __ _ _ __ ___   ___    _____   _____ _ __   \t =\n=\t / _` |/ _` | '_ ` _ \\ / _ \\  / _ \\ \\ / / _ \\ '__|\t =\n=\t| (_| | (_| | | | | | |  __/ | (_) \\ V /  __/ |   \t =\n=\t \\__, |\\__,_|_| |_| |_|\\___|  \\___/ \\_/ \\___|_|      \t =\n=\t  __/ |                                           \t =\n=\t |___/                                            \t =\n"
+finalNewLine: .asciiz "=\t\t\t\t\t\t\t\t =\n"
+finalNote: .asciiz "=\t\t    Thank you for playing! :)\t\t\t =\n"
+endFinalScreen: .asciiz "==================================================================\n"
+
 
 newLine: .asciiz "\n"
 comma: .asciiz ", "
@@ -255,8 +260,12 @@ playAgain:
 	beq $t0, 2, exit
 
 exit:
-	printString(newLine)
-	printString(thankYou)
+	# Print out final screen
+	printString(finalScreen)
+	printString(finalNewLine)
+	printString(finalNote)
+	printString(endFinalScreen)
+	printString(option)
 	li $v0, 10
 	syscall
 	
