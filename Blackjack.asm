@@ -43,7 +43,7 @@ newLine: .asciiz "\n"
 comma: .asciiz ", "
 
 # deck of cards. Each index will represent a card with it's value.
-deckValue: .word 2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11
+deckValue: .word 2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11		#a singular 1 for when aces need to be changed to 1
 deckCards: .word 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 dealer: .space 44
 player: .space 44
@@ -181,6 +181,12 @@ stand:
 # display the cards of everyone
 	
 bust:
+	printString(newLine)
+	printString(dealerHand)
+	displayDealerHand($s2)
+	printString(newLine)
+	
+	printString(newLine)
 	printString(playerHand)
 	displayHand($s3, $s5, $t5)  #print out what player got before saying they busted
 	printString(bustString)

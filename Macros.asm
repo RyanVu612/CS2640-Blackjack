@@ -161,8 +161,6 @@ done_randomCard:
 			
 			#ace
 			sub $t1, $t1, 10
-			li $t3, 1
-			setEntry(%array, $t2, $t3)
 			j checkAce_sumArray
 		
 	end_sumArray:
