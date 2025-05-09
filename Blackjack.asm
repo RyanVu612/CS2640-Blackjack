@@ -43,7 +43,8 @@ newLine: .asciiz "\n"
 comma: .asciiz ", "
 
 # deck of cards. Each index will represent a card with it's value.
-deck: .word 2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11
+deckValue: .word 2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11,2,3,4,5,6,7,8,9,10,10,10,10,11
+deckCards: .word 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 dealer: .space 44
 player: .space 44
 
@@ -70,7 +71,8 @@ menu:
 play:
 	#-----------Load-Game-----------#
 	# Load deck
-	la $s0, deck 		# $s0 = deck
+	la $s0, deckValue 		# $s0 = deck
+	la $s8, deck
 	
 	la $s1, dealer		# Dealer hand
 	la $s2, player		# Player hand
@@ -80,28 +82,28 @@ play:
 	
 	li $s5, 52 	#deckSize
 	
-	li $s6, 0	# dealer total
-	li $s7, 0	# player total
+	li $t4, 0	# dealer total
+	li $t5, 0	# player total
 
 	
 	# Randomly select 2 cards for the dealer		save into $s1
 	# Remove those 2 cards from deck as you take them
 	
 	# First card
-	drawCard($s1, $s3, $s6)
+	drawCard($s1, $s3, $t4)
 	
 	#second card
-	drawCard($s1, $s3, $s6)
+	drawCard($s1, $s3, $t4)
 	
 	
 	#randomly select 2 cards for the player		save into $s2
 	#remove those 2 cards from deck as you take them
 	
 	#first card
-	drawCard($s2, $s4, $s7)
+	drawCard($s2, $s4, $t5)
 	
 	#second card
-	drawCard($s2, $s4, $s7)
+	drawCard($s2, $s4, $t5)
 
 	
 	beq $t3, 21, win #if user gets 21 in their first two cards, they win
@@ -119,7 +121,7 @@ hitStandMenu:
 	
 	printString(newLine)
 	printString(playerHand)
-	displayHand($s2, $s4, $s7)
+	displayHand($s2, $s4, $t5)
 	printString(newLine)
 	
 	#ask player if they want to hit or stand
@@ -141,9 +143,9 @@ hitStandMenu:
 	
 hit:
 	#draw a random card for the user
-	drawCard($s2, $s4, $s7)
+	drawCard($s2, $s4, $t5)
 	
-	bgt $s7, 21, bust
+	bgt $t5, 21, bust
 	j hitStandMenu #reprompt user to hit or stand
 
 	
@@ -157,16 +159,16 @@ stand:
 	# Display current hands
 	printString(dealerTurn)
 	printString(dealerHand)
-	displayHand($s1, $s3, $s6)
+	displayHand($s1, $s3, $t4)
 	printString(newLine)
 	printString(playerHand)
-	displayHand($s2, $s4, $s7)
+	displayHand($s2, $s4, $t5)
 	
 	jal dealerDraw 		# dealer's turn
 	 
-	bgt $s6, 21, win	#if dealer busts, player wins
-	bgt $s7, $s6, win	#if player > dealer, player wins
-	bge $s7, $s6, tie	#if player = dealer, draw
+	bgt $t4, 21, win	#if dealer busts, player wins
+	bgt $t5, $t4, win	#if player > dealer, player wins
+	bge $t5, $t4, tie	#if player = dealer, draw
 	
 	j lose			#else, player < dealer, player loses
 	
@@ -177,7 +179,7 @@ stand:
 	
 bust:
 	printString(playerHand)
-	displayHand($s2, $s4, $s7)  #print out what player got before saying they busted
+	displayHand($s2, $s4, $t5)  #print out what player got before saying they busted
 	printString(bustString)
 	
 	j lose 			# else, player loses
@@ -187,18 +189,18 @@ bust:
 #dealer draws until reaches 17+ or busts
 	
 dealerDraw:
-	bgt $s6, 21, dealerBust
-	bgt $s6, 16, dealerStand
+	bgt $t4, 21, dealerBust
+	bgt $t4, 16, dealerStand
 	
 	printString(dealerDrawString)
-	drawCard($s1, $s3, $s6)
+	drawCard($s1, $s3, $t4)
 
 	printString(dealerTurn)
 	printString(dealerHand)
-	displayHand($s1, $s3, $s6)
+	displayHand($s1, $s3, $t4)
 	printString(newLine)
 	printString(playerHand)
-	displayHand($s2, $s4, $s7)
+	displayHand($s2, $s4, $t5)
 	j dealerDraw # repeat until dealer reaches 17+
 
 #---------DEALERSTAND--------#
