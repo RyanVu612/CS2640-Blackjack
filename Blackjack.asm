@@ -176,19 +176,10 @@ stand:
 # display the cards of everyone
 	
 bust:
+	printString(playerHand)
+	displayHand($s2, $s4, $s7)  #print out what player got before saying they busted
 	printString(bustString)
 	
-	# Display current hands
-	printString(dealerTurn)
-	printString(dealerHand)
-	displayHand($s1, $s3, $s6)
-	printString(newLine)
-	printString(playerHand)
-	displayHand($s2, $s4, $s7)
-	
-	jal dealerDraw 		# dealer's turn
-	
-	bgt $s6, 21, tie 	# if dealer also busts, then it is a tie
 	j lose 			# else, player loses
 	
 	
