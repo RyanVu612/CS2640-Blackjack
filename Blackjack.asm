@@ -71,42 +71,39 @@ menu:
 play:
 	#-----------Load-Game-----------#
 	# Load deck
-	la $s0, deckValue 		# $s0 = deck
-	la $s8, deck
+	la $s0, deckValue 		# $s0 = deckValues
+	la $s1, deckCards		# $s1 = deckCard
 	
-	la $s1, dealer		# Dealer hand
-	la $s2, player		# Player hand
+	la $s2, dealer		# Dealer hand
+	la $s3, player		# Player hand
 	
-	li $s3, 0	# Number of cards dealer has
-	li $s4, 0	# Number of cards player has
+	li $s4, 0	# Number of cards dealer has
+	li $s5, 0	# Number of cards player has
 	
-	li $s5, 52 	#deckSize
+	li $s6, 52 	#deckSize
 	
 	li $t4, 0	# dealer total
 	li $t5, 0	# player total
 
 	
-	# Randomly select 2 cards for the dealer		save into $s1
+	# Randomly select 2 cards for the dealer		save into $s2
 	# Remove those 2 cards from deck as you take them
 	
 	# First card
-	drawCard($s1, $s3, $t4)
+	drawCard($s2, $s4, $t4)
 	
 	#second card
-	drawCard($s1, $s3, $t4)
+	drawCard($s2, $s4, $t4)
 	
 	
-	#randomly select 2 cards for the player		save into $s2
+	#randomly select 2 cards for the player		save into $s3
 	#remove those 2 cards from deck as you take them
 	
 	#first card
-	drawCard($s2, $s4, $t5)
+	drawCard($s3, $s5, $t5)
 	
 	#second card
-	drawCard($s2, $s4, $t5)
-
-	
-	beq $t3, 21, win #if user gets 21 in their first two cards, they win
+	drawCard($s3, $s5, $t5)
 	
 	
 hitStandMenu:
@@ -116,12 +113,12 @@ hitStandMenu:
 	# manually display dealer first hand, since only show first card
 	printString(newLine)
 	printString(dealerHand)
-	displayDealerHand($s1)
+	displayDealerHand($s2)
 	printString(newLine)
 	
 	printString(newLine)
 	printString(playerHand)
-	displayHand($s2, $s4, $t5)
+	displayHand($s3, $s5, $t5)
 	printString(newLine)
 	
 	#ask player if they want to hit or stand
@@ -136,14 +133,14 @@ hitStandMenu:
 	
 	
 #-------------HIT------------#
-#randomly select 1 card for the player 		save into $s2
+#randomly select 1 card for the player 		save into $s3
 #display card to player alongside other cards
 #remove this card from deck
 #if > 21, bust
 	
 hit:
 	#draw a random card for the user
-	drawCard($s2, $s4, $t5)
+	drawCard($s3, $s5, $t5)
 	
 	bgt $t5, 21, bust
 	j hitStandMenu #reprompt user to hit or stand
@@ -151,7 +148,7 @@ hit:
 	
 #-------------STAND-----------#
 #display dealers second card
-#if < 16, select random card from deck and remove from deck. Save into $s1
+#if < 16, select random card from deck and remove from deck. Save into $s2
 	
 stand:
 	printString(standString)
@@ -159,10 +156,10 @@ stand:
 	# Display current hands
 	printString(dealerTurn)
 	printString(dealerHand)
-	displayHand($s1, $s3, $t4)
+	displayHand($s2, $s4, $t4)
 	printString(newLine)
 	printString(playerHand)
-	displayHand($s2, $s4, $t5)
+	displayHand($s3, $s5, $t5)
 	
 	jal dealerDraw 		# dealer's turn
 	 
@@ -179,7 +176,7 @@ stand:
 	
 bust:
 	printString(playerHand)
-	displayHand($s2, $s4, $t5)  #print out what player got before saying they busted
+	displayHand($s3, $s5, $t5)  #print out what player got before saying they busted
 	printString(bustString)
 	
 	j lose 			# else, player loses
@@ -193,14 +190,14 @@ dealerDraw:
 	bgt $t4, 16, dealerStand
 	
 	printString(dealerDrawString)
-	drawCard($s1, $s3, $t4)
+	drawCard($s2, $s4, $t4)
 
 	printString(dealerTurn)
 	printString(dealerHand)
-	displayHand($s1, $s3, $t4)
+	displayHand($s2, $s4, $t4)
 	printString(newLine)
 	printString(playerHand)
-	displayHand($s2, $s4, $t5)
+	displayHand($s3, $s5, $t5)
 	j dealerDraw # repeat until dealer reaches 17+
 
 #---------DEALERSTAND--------#

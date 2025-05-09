@@ -82,11 +82,16 @@ done_negate:
 	#get $t2 % $t3
 	div $t2, %deckSize		#divide $t2 by 52
 	mfhi $t2				#move remainder into $t2
-	getEntry($s1, $t2)		#get card value of that index. save in $v0
+	move $t6, $t2			#save in $t6
+	getEntry($s0, $t6)		#get card value of that index. save in $t3
+	move $t3, $v0				
+	
+	getEntry($s1, $t6)		#return if card is available. saved in $v0
 	
 	j loop_randomCard
 	
 done_randomCard:
+	move $v0, $t3 			#save card value in $v0
 .end_macro
 
 .macro sumArray(%array, %size)	#sum saved to $v0
@@ -146,7 +151,7 @@ done_randomCard:
 .end_macro
 
 .macro drawCard(%array, %index, %total)
-	randomCard($s0, $s5)			# Get random card in $v0			#save index of card in $t1
+	randomCard($s0, $s6)			# Get random card in $v0			#save index of card in $t1
 	move $t1, $v0
 	setEntry(%array, %index, $t1)		# Put card into person's hand
 	add %index, %index, 1			# Increment number of cards person has
