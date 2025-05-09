@@ -63,20 +63,24 @@ done_displayHand:
 	
 jack:
 	printString(jackCard)
+	li $t1, 10
 	j done_printCard
 queen:
 	printString(queenCard)
+	li $t1, 10
 	j done_printCard
 king:
 	printString(kingCard)
+	li $t1, 10
 	j done_printCard
 ace:
 	printString(aceCard)
+	li $t1, 11
 	j done_printCard
 
 numberCard:	#If not a face card, print card number
 	getEntry($s0, %cardIndex)
-	move $t1, $v0
+	move $t1, $v0			#card value saved in $t1
 	printInt($t1)
 	
 done_printCard:
