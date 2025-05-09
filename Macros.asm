@@ -82,7 +82,7 @@ done_negate:
 	#get $t2 % $t3
 	div $t2, %deckSize		#divide $t2 by 52
 	mfhi $t2				#move remainder into $t2
-	getEntry(%deck, $t2)		#get card value of that index
+	getEntry($s1, $t2)		#get card value of that index. save in $v0
 	
 	j loop_randomCard
 	
@@ -153,5 +153,5 @@ done_randomCard:
 	sumArray(%array, %index)		# add value to total
 	move %total, $v0
 
-	removeEntry($s0, $t2)		# Remove card from deck
+	removeEntry($s1, $t2)		# Remove card from deck
 .end_macro
