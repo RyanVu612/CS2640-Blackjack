@@ -54,7 +54,6 @@ done_displayHand:
 	syscall
 .end_macro
 
-
 .macro randomCard(%deck, %deckSize)	#save random card in $v0
 	li $v0, 0		#set $v0 to zero to ensure code runs at least once
 loop_randomCard:			#keep getting random card until card is pulled
@@ -83,15 +82,12 @@ done_negate:
 	div $t2, %deckSize		#divide $t2 by 52
 	mfhi $t2				#move remainder into $t2
 	move $t6, $t2			#save in $t6
-	getEntry($s0, $t6)		#get card value of that index. save in $t3
-	move $t3, $v0				
-	
 	getEntry($s1, $t6)		#return if card is available. saved in $v0
-	
-	j loop_randomCard
+						
+	j loop_randomCard			
 	
 done_randomCard:
-	move $v0, $t3 			#save card value in $v0
+	getEntry($s0, $t6)		#get card value of that index. save in $t3
 .end_macro
 
 .macro sumArray(%array, %size)	#sum saved to $v0
