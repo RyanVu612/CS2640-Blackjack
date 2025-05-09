@@ -15,8 +15,9 @@
 
 .macro displayDealerHand(%array)	#for when dealer only shows one card
 	move $a1, %array
-	lw $t1, 0($a1)
-	printInt($t1)
+	lw $t1, 0($a1)			#cardIndex
+	
+	printCard($t1)
 	printString(comma)
 	printString(blankCard)
 	printString(newLine)
@@ -24,18 +25,18 @@
 	printInt($t1)
 .end_macro
 
-.macro displayHand(%array, %size, %total)
-	move $a1, %array
+.macro displayHand(%hand, %numberCards, %total)
+	move $a1, %hand
 	li $t2, 0		#counter
 	
 loop_displayHand:
-	bge $t2, %size, total_displayHand
+	bge $t2, %numberCards, total_displayHand
 	beqz $t2, firstCard_displayHand		#formatting
-	printString(comma)					#if not firs card, will fall through to next loop
+	printString(comma)					#if not first card, will fall through to next loop
 
 firstCard_displayHand:
 	lw $t3, 0($a1)
-	printInt($t3)
+	printCard($t3)
 	add $a1, $a1, 4			#next element
 	add $t2, $t2, 1			#increment counter
 	j loop_displayHand
@@ -49,12 +50,44 @@ total_displayHand:
 done_displayHand:
 .end_macro
 
+.macro printCard(%cardIndex)
+	li $t7, 13
+	div %cardIndex, $t7		#divide $t2 by 13
+	mfhi $t3				#move remainder into $t3
+	
+	beq $t3, 9, jack
+	beq $t3, 10, queen
+	beq $t3, 11, king
+	beq $t3, 12, ace
+	j numberCard
+	
+jack:
+	printString(jackCard)
+	j done_printCard
+queen:
+	printString(queenCard)
+	j done_printCard
+king:
+	printString(kingCard)
+	j done_printCard
+ace:
+	printString(aceCard)
+	j done_printCard
+
+numberCard:	#If not a face card, print card number
+	getEntry($s0, %cardIndex)
+	move $t1, $v0
+	printInt($t1)
+	
+done_printCard:
+.end_macro
+
 .macro getInt 	# save int in $v0
 	li $v0, 5
 	syscall
 .end_macro
 
-.macro randomCard(%deck, %deckSize)	#save random card in $v0
+.macro randomCard(%deck, %deckSize)	#save random card index in $v0
 	li $v0, 0		#set $v0 to zero to ensure code runs at least once
 loop_randomCard:			#keep getting random card until card is pulled
 	bnez $v0, done_randomCard
@@ -87,7 +120,7 @@ done_negate:
 	j loop_randomCard			
 	
 done_randomCard:
-	getEntry($s0, $t6)		#get card value of that index. save in $t3
+	move $v0, $t6			#save index in $t6 and return that
 .end_macro
 
 .macro sumArray(%array, %size)	#sum saved to $v0
@@ -97,7 +130,9 @@ done_randomCard:
 	
 	add_sumArray:
 		bge $t2, %size, addDone_sumArray
-		lw $t3, 0($a1)		#load array element
+		lw $t3, 0($a1)		#load array element card index
+		getEntry($s0, $t3)	#save card value in $v0
+		move $t3, $v0		#move card value into $t3
 		add $t1, $t1, $t3	#sum += element
 		add $a1, $a1, 4		#next element
 		add $t2, $t2, 1		#counter++
@@ -114,7 +149,9 @@ done_randomCard:
 			bge $t2, %size, end_sumArray
 			ble $t1, 21, end_sumArray
 			add $a1, $a1, 4
-			lw $t3, 0($a1)		#load array element
+			lw $t3, 0($a1)		#load array element card index
+			getEntry($s0, $t3)	#save card value in $v0
+			move $t3, $v0		#move card value into $t3
 			add $t2, $t2, 1		#increment counter
 			bne $t3, 11, checkAce_sumArray		#if not ace, don't care
 			
@@ -129,26 +166,26 @@ done_randomCard:
 .end_macro
 
 .macro getEntry(%array, %index)		# Save in $v0
-	mul $t2, %index, 4
-	add $t3, %array, $t2
-	lw $v0, 0($t3)
+	mul $t8, %index, 4
+	add $t9, %array, $t8
+	lw $v0, 0($t9)
 .end_macro
 
 .macro setEntry(%array, %index, %value)
-	mul $t2, %index, 4
-	add $t3, %array, $t2
-	sw %value, 0($t3)
+	mul $t8, %index, 4
+	add $t9, %array, $t8
+	sw %value, 0($t9)
 .end_macro
 
 .macro removeEntry(%array, %index)		# Set selected index to 0
-	mul $t2, %index, 4
-	add $t3, %array, $t2
-	sw $zero, 0($t3)
+	mul $t8, %index, 4
+	add $t9, %array, $t8
+	sw $zero, 0($t9)
 .end_macro
 
 .macro drawCard(%array, %index, %total)
-	randomCard($s0, $s6)			# Get random card in $v0			#save index of card in $t1
-	move $t1, $v0
+	randomCard($s0, $s6)			# Get random card index in $v0	
+	move $t1, $v0					#save index of card in $t1
 	setEntry(%array, %index, $t1)		# Put card into person's hand
 	add %index, %index, 1			# Increment number of cards person has
 	sumArray(%array, %index)		# add value to total

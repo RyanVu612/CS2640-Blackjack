@@ -48,6 +48,12 @@ deckCards: .word 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 dealer: .space 44
 player: .space 44
 
+#text for Jack, Queen, King, Ace
+jackCard: .asciiz "J"
+queenCard: .asciiz "Q"
+kingCard: .asciiz "K"
+aceCard: .asciiz "A"
+
 
 .text
 main:
