@@ -267,7 +267,6 @@ exit:
 	printString(finalNewLine)
 	printString(finalNote)
 	printString(endFinalScreen)
-	printString(option)
 	li $v0, 10
 	syscall
 	
