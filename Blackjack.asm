@@ -63,7 +63,7 @@ betAsk: .asciiz "\nPlace your bet: $"
 betError: .asciiz "Invalid bet! Must be positive and not exceed your bank.\n"
 betWin:.asciiz "\nYou won $"
 betLose: .asciiz "\nYou lost $"
-betTie:       .asciiz "Tie! Your bet is returned.\n"
+betTie:       .asciiz "Tie!!! Your bet is returned.\n"
 bankrupt:   .asciiz "\nYou've run out of money! Game over.\n"
 
 .text
@@ -268,7 +268,10 @@ win:
 # go to play again screen
 	
 tie:
-	printString(TIE)
+	printString(betTie)
+	lw $t7, bank
+	add $t7, $t7, $s7
+	sw $t7, bank
 	j playAgain
 
 #------------LOSE-----------#
@@ -278,6 +281,8 @@ tie:
 	
 lose:
 	printString(YOULOSE)
+	printString(betLose)
+	printInt($s7)
 	j playAgain
 
 #---------Play-Again--------#
