@@ -54,9 +54,7 @@ kingCard: .asciiz "K"
 aceCard: .asciiz "A"
 
 #betting functionality
-bank: .word 1000
-currentBet: .word 0
-
+bank: .word 1000 #Start player with $1000 in the bank
 acctAmt: .asciiz "\nYour bank: $"
 betAsk: .asciiz "\nPlace your bet: $"
 betError: .asciiz "Invalid bet! Must be positive and not exceed your bank.\n"
@@ -94,7 +92,7 @@ play:
     	move $s7, $v0 #bet value stored in $s7
     	
     	blez $s7, betFail
-    	bgt $s7, $t0, betFail
+	bgt $s7, $t7, betFail
 
 	sub $t7, $t7, $s7 #subtract bet from bank and update bank
 	sw $t7, bank 
