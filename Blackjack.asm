@@ -54,6 +54,17 @@ queenCard: .asciiz "Q"
 kingCard: .asciiz "K"
 aceCard: .asciiz "A"
 
+#betting functionality
+bankAcct: .word 1000
+currentBet: .word 0
+
+acctAmt: .asciiz "\nYour bank: $"
+betAsk: .asciiz "\nPlace your bet: $"
+betError: .asciiz "Invalid bet! Must be positive and not exceed your bank.\n"
+betWin:.asciiz "You won $"
+betLose: .asciiz "You lost $"
+betTie:       .asciiz "Push! Your bet is returned.\n"
+bankrupt:   .asciiz "\nYou've run out of money! Game over.\n"
 
 .text
 main:

@@ -195,3 +195,10 @@ done_randomCard:
 
 	removeEntry($s1, $t2)		# Remove card from deck
 .end_macro
+
+.macro printBank
+    printString(bankPrompt)
+    lw $a0, bankAmount
+    printInt($a0)
+    printString(newLine)
+.end_macro
