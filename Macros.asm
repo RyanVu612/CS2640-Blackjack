@@ -197,8 +197,8 @@ done_randomCard:
 .end_macro
 
 .macro printBank
-    printString(bankPrompt)
-    lw $a0, bankAmount
+    printString(acctAmt)
+    lw $a0, bank
     printInt($a0)
     printString(newLine)
 .end_macro

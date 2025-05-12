@@ -55,15 +55,15 @@ kingCard: .asciiz "K"
 aceCard: .asciiz "A"
 
 #betting functionality
-bankAcct: .word 1000
+bank: .word 1000
 currentBet: .word 0
 
 acctAmt: .asciiz "\nYour bank: $"
 betAsk: .asciiz "\nPlace your bet: $"
 betError: .asciiz "Invalid bet! Must be positive and not exceed your bank.\n"
-betWin:.asciiz "You won $"
-betLose: .asciiz "You lost $"
-betTie:       .asciiz "Push! Your bet is returned.\n"
+betWin:.asciiz "\nYou won $"
+betLose: .asciiz "\nYou lost $"
+betTie:       .asciiz "Tie! Your bet is returned.\n"
 bankrupt:   .asciiz "\nYou've run out of money! Game over.\n"
 
 .text
@@ -86,6 +86,18 @@ menu:
 	j menu		# loop until get valid input
 	
 play:
+	printBank
+	lw $t7, bank
+	blez $t7, broke
+
+	printString(betAsk)
+    	getInt
+    	move $s7, $v0
+    	lw $t7, bank
+	sub $t7, $t7, $s7
+	sw $t7, bank
+
+	
 	#-----------Load-Game-----------#
 	# Load deck
 	la $s0, deckValue 		# $s0 = deckValues
@@ -243,6 +255,12 @@ dealerBust:
 
 win:
 	printString(WIN)
+	printString(betWin)
+	printInt($s7)
+	add $s7, $s7, $s7
+	lw $t7, bank
+	add $t7, $t7, $s7
+	sw $t7, bank
 	j playAgain
 	
 #------------TIE------------#
@@ -271,6 +289,10 @@ playAgain:
 	move $t0, $v0
 	beq $t0, 1, play
 	beq $t0, 2, exit
+	
+broke:
+	printString(bankrupt)
+	j exit
 
 exit:
 	# Print out final screen
