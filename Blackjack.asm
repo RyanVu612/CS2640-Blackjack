@@ -29,7 +29,6 @@ dealerDrawString: .asciiz "\n***Dealer Draws\n"
 dealerBustString: .asciiz "\n***Dealer Busts\n"
 
 WIN: .asciiz "YOU WIN!!!!"
-TIE: .asciiz "TIE!!!"
 YOULOSE: .asciiz "YOU LOSE!!!!"
 
 playAgainPrompt: .asciiz "\nWould you like to (1) Play Again or (2) Quit?\n"
@@ -64,7 +63,7 @@ betError: .asciiz "Invalid bet! Must be positive and not exceed your bank.\n"
 betWin:.asciiz "\nYou won $"
 betLose: .asciiz "\nYou lost $"
 betTie:       .asciiz "Tie!!! Your bet is returned.\n"
-bankrupt:   .asciiz "\nYou've run out of money! Game over.\n"
+bankrupt:   .asciiz "\n\nYou've run out of money! Game over.\n"
 
 .text
 main:
@@ -86,17 +85,19 @@ menu:
 	j menu		# loop until get valid input
 	
 play:
-	printBank
-	lw $t7, bank
+	printBank #print current $ in bank, if 0 then jump to bankrupt msg and exit
+	lw $t7, bank #bank value stored in $t7
 	blez $t7, broke
 
 	printString(betAsk)
     	getInt
-    	move $s7, $v0
-    	lw $t7, bank
-	sub $t7, $t7, $s7
-	sw $t7, bank
+    	move $s7, $v0 #bet value stored in $s7
+    	
+    	blez $s7, betFail
+    	bgt $s7, $t0, betFail
 
+	sub $t7, $t7, $s7 #subtract bet from bank and update bank
+	sw $t7, bank 
 	
 	#-----------Load-Game-----------#
 	# Load deck
@@ -289,15 +290,21 @@ lose:
 #prompt user if want to play again
 	
 playAgain:
+	#Check for money before prompting to play again
 	lw $t1, bank
 	blez $t1, broke
+	
 	printString(playAgainPrompt)
 	getInt
 	move $t0, $v0
 	beq $t0, 1, play
 	beq $t0, 2, exit
 	
-broke:
+betFail:
+	printString(betError)
+	j play
+	
+broke: #If money <=0 then print bankrupt msg and force exit
 	printString(bankrupt)
 	j exit
 
