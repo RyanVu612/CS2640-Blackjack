@@ -91,6 +91,7 @@ play:
     	getInt
     	move $s7, $v0 #bet value stored in $s7
     	
+    	#if bet<0 or bet>bank, jump to error
     	blez $s7, betFail
 	bgt $s7, $t7, betFail
 
@@ -256,10 +257,11 @@ win:
 	printString(WIN)
 	printString(betWin)
 	printInt($s7)
-	add $s7, $s7, $s7
-	lw $t7, bank
-	add $t7, $t7, $s7
-	sw $t7, bank
+	printString(newLine)
+	add $s7, $s7, $s7 #double player's bet stored in $s7
+	lw $t7, bank #store value in bank in $t7
+	add $t7, $t7, $s7 #add bet in $s7 to $t7
+	sw $t7, bank #update bank
 	j playAgain
 	
 #------------TIE------------#
@@ -269,7 +271,7 @@ win:
 tie:
 	printString(betTie)
 	lw $t7, bank
-	add $t7, $t7, $s7
+	add $t7, $t7, $s7 #since tie, add bet back into bank
 	sw $t7, bank
 	j playAgain
 
@@ -280,7 +282,7 @@ tie:
 	
 lose:
 	printString(YOULOSE)
-	printString(betLose)
+	printString(betLose) #no change to bank since bet already subtracted
 	printInt($s7)
 	j playAgain
 
@@ -298,7 +300,7 @@ playAgain:
 	beq $t0, 1, play
 	beq $t0, 2, exit
 	
-betFail:
+betFail: #if invalid bet, print error msg and jump to start
 	printString(betError)
 	j play
 	
