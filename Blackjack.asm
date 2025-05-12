@@ -289,6 +289,8 @@ lose:
 #prompt user if want to play again
 	
 playAgain:
+	lw $t1, bank
+	blez $t1, broke
 	printString(playAgainPrompt)
 	getInt
 	move $t0, $v0
