@@ -7,3 +7,5 @@ Blackjack in MIPS Assembly
 5) Select (1) to play or (2) to exit.
 6) Follow prompts to continue playing through game.
 7) Enjoy!
+
+Video Demo: https://youtu.be/_FF64jUEyow
